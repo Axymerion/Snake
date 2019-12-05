@@ -5,9 +5,14 @@ using UnityEngine;
 public class Food : MonoBehaviour
 {
     public int maxFood = 1;
-    public int currFood;
     public float foodSpawnDelay;
     public GameObject foodPrefab;
+    private static int currFood;
+
+    public static void FoodEaten()
+    {
+        currFood--;
+    }
 
     void SpawnFood()
     {

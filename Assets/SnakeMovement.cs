@@ -4,11 +4,26 @@ using UnityEngine;
 
 public class SnakeMovement : MonoBehaviour
 {
-    public GameObject Camera;
+    public GameObject tailPrefab;
+    public GameObject snakeParent;
     public float speed = 1;
     public float movementSmoothing = 10;
     public int food = 0;
     Quaternion currDirection;
+    List<SnakeElement> tailList = new List<SnakeElement>();
+
+    struct SnakeElement
+    {
+        public GameObject segment;
+        public  Vector3 lastPosition;
+
+        public SnakeElement(GameObject segment, Vector3 lastPosition)
+        {
+            this.segment = segment;
+            this.lastPosition = lastPosition;
+        }
+
+    }
 
     void SelectRotation()
     {
@@ -30,22 +45,39 @@ public class SnakeMovement : MonoBehaviour
         }
     }
 
-    void SetRotation()
+    void UpdateSnake()
     {
         transform.rotation = currDirection;
+        for (int i = 0; i < tailList.Count; i++)
+        {
+            SnakeElement temp = tailList[i];
+            temp.lastPosition = temp.segment.transform.position;
+            tailList[i] = temp;
+        }
+
+        if(food > 0)
+        {
+            tailList.Add(new SnakeElement(Instantiate(tailPrefab, tailList[tailList.Count - 1].segment.transform.position, Quaternion.identity, snakeParent.transform), tailList[tailList.Count - 1].segment.transform.position));
+            food--;
+        }
     }
 
     void SmoothMovement()
     {
         transform.Translate(0, 0, 2/movementSmoothing);
-        Camera.transform.SetPositionAndRotation(new Vector3(transform.position.x, Camera.transform.position.y, transform.position.z), Camera.transform.rotation);
+        for(int i = 1; i < tailList.Count; i++)
+        {
+            SnakeElement temp = tailList[i];
+            temp.segment.transform.Translate((tailList[i - 1].lastPosition - temp.lastPosition) / movementSmoothing);
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        tailList.Add(new SnakeElement(gameObject, transform.position));
         currDirection = transform.rotation;
-        InvokeRepeating("SetRotation", 0, 1/speed);
+        InvokeRepeating("UpdateSnake", 0, 1/speed);
         InvokeRepeating("SmoothMovement", 0, 1 / (speed*movementSmoothing));
     }
 
@@ -53,6 +85,7 @@ public class SnakeMovement : MonoBehaviour
     void Update()
     {
         SelectRotation();
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -61,6 +94,7 @@ public class SnakeMovement : MonoBehaviour
         {
             Destroy(other.gameObject);
             food++;
+            Food.FoodEaten();
         }
     }
 }
