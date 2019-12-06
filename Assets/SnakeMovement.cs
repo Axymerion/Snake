@@ -7,7 +7,7 @@ public class SnakeMovement : MonoBehaviour
     public GameObject tailPrefab;
     public GameObject snakeParent;
     public float speed = 1;
-    public float movementSmoothing = 10;
+    [Range(1, 50)]public float movementSmoothing = 20;
     public int food = 0;
     Quaternion currDirection;
     List<SnakeElement> tailList = new List<SnakeElement>();
