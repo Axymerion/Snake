@@ -7,8 +7,8 @@ public class SnakeMovement : MonoBehaviour
     public GameObject tailPrefab;
     public GameObject snakeParent;
     public float speed = 1;
-    [Range(1, 50)]public float movementSmoothing = 20;
-    public int food = 0;
+    [Range(1, 20)]public float movementSmoothing = 20;
+    public static int food = 0;
     Quaternion currDirection;
     List<SnakeElement> tailList = new List<SnakeElement>();
 
@@ -72,6 +72,26 @@ public class SnakeMovement : MonoBehaviour
         }
     }
 
+    public void SnakeCollided(Collider other)
+    {
+        if (other.name.StartsWith("Apple"))
+        {
+            Destroy(other.gameObject);
+            food++;
+            Food.FoodEaten();
+        }
+        else if (other.gameObject != tailList[1].segment.gameObject && other.name.StartsWith("Tail"))
+        {
+            EndGame();
+        }
+    }
+
+    void EndGame()
+    {
+        CancelInvoke("UpdateSnake");
+        CancelInvoke("SmoothMovement");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,16 +105,5 @@ public class SnakeMovement : MonoBehaviour
     void Update()
     {
         SelectRotation();
-        
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.name.StartsWith("Apple"))
-        {
-            Destroy(other.gameObject);
-            food++;
-            Food.FoodEaten();
-        }
     }
 }
