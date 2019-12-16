@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SnakeMovement : MonoBehaviour
 {
@@ -80,16 +81,22 @@ public class SnakeMovement : MonoBehaviour
             food++;
             Food.FoodEaten();
         }
-        else if (other.gameObject != tailList[1].segment.gameObject && other.name.StartsWith("Tail"))
+        else if (other.name.StartsWith("Tail") && other.gameObject != tailList[1].segment.gameObject)
         {
             EndGame();
         }
+    }
+
+    void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void EndGame()
     {
         CancelInvoke("UpdateSnake");
         CancelInvoke("SmoothMovement");
+        Invoke("ReloadScene", 1.5f);
     }
 
     // Start is called before the first frame update
