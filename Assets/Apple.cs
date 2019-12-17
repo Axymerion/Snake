@@ -5,6 +5,7 @@ using UnityEngine;
 public class Apple : MonoBehaviour
 {
     public float rotationsPerSecond = 0.5f;
+    private bool triggerActive = true;
 
     void Rotate()
     {
@@ -15,11 +16,19 @@ public class Apple : MonoBehaviour
     void Start()
     {
         InvokeRepeating("Rotate", 0, 0.01f / rotationsPerSecond);
+        Invoke("DisableTrigger", 0.4f);
     }
 
-    // Update is called once per frame
-    void Update()
+    void DisableTrigger()
     {
-        
+        triggerActive = false;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(triggerActive && (other.CompareTag("Tail") || other.CompareTag("Apple")))
+        {
+            Destroy(gameObject);
+        }
     }
 }

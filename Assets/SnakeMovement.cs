@@ -75,17 +75,17 @@ public class SnakeMovement : MonoBehaviour
 
     public void SnakeCollided(Collider other)
     {
-        if (other.name.StartsWith("Apple"))
+        if (other.CompareTag("Apple"))
         {
             Destroy(other.gameObject);
             food++;
             Food.FoodEaten();
         }
-        else if (other.name.StartsWith("Tail") && other.gameObject != tailList[1].segment.gameObject)
+        else if (other.CompareTag("Tail") && other.gameObject != tailList[1].segment.gameObject)
         {
             EndGame();
         }
-        else if(other.name == "Wall")
+        else if(other.CompareTag("Wall"))
         {
             EndGame();
         }
