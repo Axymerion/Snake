@@ -85,6 +85,10 @@ public class SnakeMovement : MonoBehaviour
         {
             EndGame();
         }
+        else if(other.name == "Wall")
+        {
+            EndGame();
+        }
     }
 
     void ReloadScene()

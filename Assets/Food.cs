@@ -16,11 +16,11 @@ public class Food : MonoBehaviour
 
     void SpawnFood()
     {
-        if(currFood < maxFood)
+        if (currFood < maxFood)
         {
             int x = Random.Range(-12, 12) * 2;
             int z = Random.Range(-12, 12) * 2;
-            GameObject temp = Instantiate(foodPrefab, new Vector3(x, 0.5f, z), Quaternion.identity, transform);
+            Instantiate(foodPrefab, new Vector3(x, 0.5f, z), Quaternion.identity, transform.GetChild(1).transform);
             currFood++;
         }
     }
@@ -35,6 +35,6 @@ public class Food : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currFood = transform.childCount;
+        currFood = transform.GetChild(1).childCount;
     }
 }
